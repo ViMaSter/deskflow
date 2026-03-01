@@ -131,6 +131,16 @@ elseif(UNIX)
     )
   endif()
 
+  # uinput support is always available on Linux (no external dependencies)
+  list(APPEND PLATFORM_SOURCES
+    UInputEventQueueBuffer.cpp
+    UInputEventQueueBuffer.h
+    UInputKeyState.cpp
+    UInputKeyState.h
+    UInputScreen.cpp
+    UInputScreen.h
+  )
+
   if(LIBEI_FOUND)
     list(APPEND PLATFORM_SOURCES
       EiEventQueueBuffer.cpp
@@ -177,7 +187,7 @@ if(UNIX)
     if(${LIBXKBCOMMON_VERSION} VERSION_GREATER_EQUAL "1.10")
       target_compile_definitions(platform PRIVATE HAVE_XKB_KEYMAP_MOD_GET_MASK=1)
     endif()
-    target_compile_definitions(platform PUBLIC WINAPI_LIBEI WINAPI_LIBPORTAL)
+    target_compile_definitions(platform PUBLIC WINAPI_LIBEI WINAPI_LIBPORTAL WINAPI_UINPUT)
     target_include_directories(platform PUBLIC ${LIBEI_INCLUDE_DIRS} ${LIBPORTAL_INCLUDE_DIRS})
     target_link_libraries(
       platform

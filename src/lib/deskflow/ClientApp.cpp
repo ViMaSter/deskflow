@@ -36,6 +36,10 @@
 #include "platform/EiScreen.h"
 #endif
 
+#if WINAPI_UINPUT
+#include "platform/UInputScreen.h"
+#endif
+
 #if WINAPI_CARBON
 #include "base/TMethodJob.h"
 #include "mt/Thread.h"
@@ -104,6 +108,13 @@ const char *ClientApp::daemonName() const
 
 deskflow::Screen *ClientApp::createScreen()
 {
+#if WINAPI_UINPUT
+  if (Settings::value(Settings::Core::UseUInput).toBool()) {
+    LOG_INFO("using uinput screen for kernel-level input emulation");
+    return new deskflow::Screen(new deskflow::UInputScreen(false, getEvents()), getEvents());
+  }
+#endif
+
 #if WINAPI_MSWINDOWS
   return new deskflow::Screen(
       new MSWindowsScreen(
